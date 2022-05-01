@@ -1,23 +1,26 @@
 const express = require('express');
-const powershell = require('node-powershell');
-const { exec } = require('child_process');
+const { exec, spawn } = require('child_process');
+const production =  false;
 
 function createRouter() {
     const router = express.Router();
 
-    // Powershell command test by creating file with vmName
     router.post('/createvm', async (req, res, next) => {
-        console.log(req.body);
 
-        // Create Powershell command
-        let commandInput = `Write-Output "Creating file ...";
-            New-Item -Path . -Name "${req.body.vmName}.txt" -ItemType "file" -Value "Created with nodejs";
-            Write-Output "File created !"`;
+        if(production) { // Test mode if not in production
+            var commandInput = `. ./powershell-scripts/vmDeployment.ps1;
+                Add-NewVM -VMName "${req.body.vmName}" -VMRam ${req.body.ram}${req.body.unity} -VMDiskSize ${req.body.storage}${req.body.unity} -VMOS ${req.body.os} -VMProcessor 1`;//VMProcessor todo
+
+        } else {
+            var commandInput = `. ./powershell-scripts/testMode.ps1;
+                Add-NewFile -VMName "${req.body.vmName}" -VMUnity ${req.body.unity} -VMRam ${req.body.ram} -VMDiskSize ${req.body.storage} -VMOS ${req.body.os}`;
+
+        }
 
         // Exec command
         exec(commandInput, {'shell':'powershell.exe'}, (error, data) => {
             if(error) {
-                throw error;
+                console.log(error);
             } else {
                 console.log(`${data}`);
             }
