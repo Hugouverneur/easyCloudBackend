@@ -18,13 +18,43 @@ function createRouter() {
         }
 
         // Exec command
-        exec(commandInput, {'shell':'powershell.exe'}, (error, data) => {
+        let proc = exec(commandInput, {'shell':'powershell.exe'}, (error, data) => {
             if(error) {
                 console.log(error);
             } else {
                 console.log(`${data}`);
+                
+                // End process
+                proc.kill();
             }
         });
+
+    });
+
+    router.post('/editvm', async (req, res, next) => {
+
+        if(production) { // Test mode if not in production
+            var commandInput = `. ./powershell-scripts/vmDeployment.ps1;
+                Save-Configuration -VMName "${req.body.vmName}" -VMRam ${req.body.ram} -VMDiskSize ${req.body.storage}`;
+        
+        } else {
+            console.log([req.body.vmName, req.body.ram, req.body.storage]);
+            return('DEV_MODE');
+        }
+
+
+        // Exec command
+        let proc = exec(commandInput, {'shell':'powershell.exe'}, (error, data) => {
+            if(error) {
+                console.log(error);
+            } else {
+                console.log(`${data}`);
+                
+                // End process
+                proc.kill();
+            }
+        });
+
     });
 
     return router;
