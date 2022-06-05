@@ -57,6 +57,32 @@ function createRouter() {
 
     });
 
+    router.post('/deletevm', async (req, res, next) => {
+
+        if(production) { // Test mode if not in production
+            var commandInput = `. ./powershell-scripts/vmDeployment.ps1;
+                Uninstall-VM -VMName "${req.body.vmName}"`;
+        
+        } else {
+            var commandInput = `Write-Warning "VM ${req.body.vmName} deleted !"`
+            return('DEV_MODE');
+        }
+
+
+        // Exec command
+        let proc = exec(commandInput, {'shell':'powershell.exe'}, (error, data) => {
+            if(error) {
+                console.log(error);
+            } else {
+                console.log(`${data}`);
+                
+                // End process
+                proc.kill();
+            }
+        });
+
+    });
+
     return router;
 }
 
