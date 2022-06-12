@@ -2,14 +2,16 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-const createVm = require('./createVm');
+const manageVm = require('./manageVm');
+const manageUser = require('./manageUser');
 
 const port = process.env.PORT || 8080;
 
 const app = express()
     .use(cors())
     .use(bodyParser.json())
-    .use(createVm())
+    .use(manageVm())
+    .use(manageUser())
 
 
 app.listen(port, () => {
