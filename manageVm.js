@@ -39,6 +39,7 @@ function createRouter() {
                     if(element.includes('Id:')) {
                         var vmId = element.replace('Id: ', '')
                         console.log(vmId)
+                        return vmId;
 
                         //Enregistrer dans la bdd les infos de la vm avec son vmId
                     }
@@ -61,6 +62,21 @@ function createRouter() {
                 //Si data affiche un message d'erreur affirmant qu'il n'a pas trouvé la VM ne pas s'inquièter celà veut dire que la machine a bien été supprimée
 
                 //Supprimer les infos de la VM aussi dans la base de données
+            }
+        });
+    });
+
+    router.get('/instance-monitoring', async (req, res, next) => {
+        var commandInput = `Insérer PowerShell ici sur cet id -> ${req.body.instanceId}`
+
+        console.log(commandInput)
+
+        let proc = exec(commandInput, {'shell':'powershell.exe'}, (error, data) => {
+            if(error) {
+                console.log(error);
+
+            } else {
+                console.log(data)
             }
         });
     });
