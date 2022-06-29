@@ -67,9 +67,13 @@ function createRouter() {
     });
 
     router.get('/instance-monitoring', async (req, res, next) => {
-        var commandInput = `Insérer PowerShell ici sur cet id -> ${req.body.instanceId}`
+        var commandInput = `Get-MonitoringData -VMId ${req.body.instanceId} -VirtualizationServer ${req.body.virtualizationServer}`
 
-        console.log(commandInput)
+        //Get-MonitoringMode -VMId ${req.body.instanceId}  => Voir si le monitoring est activé ou non sur la VM retourne un JSON en type String
+        
+        //Update-MonitoringMode -VMId ${req.body.instanceId} -isMonitored False -VirtualizationServer VMSRV01  => Activer/Désactiver le monitoring
+
+        console.log(commandInput) 
 
         let proc = exec(commandInput, {'shell':'powershell.exe'}, (error, data) => {
             if(error) {
