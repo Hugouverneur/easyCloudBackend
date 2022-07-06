@@ -1,5 +1,6 @@
 const express = require('express');
 const { exec, spawn } = require('child_process');
+const { response } = require('express');
 
 function createRouter() {
     const router = express.Router();
@@ -23,7 +24,6 @@ function createRouter() {
     });
 
     router.post('/createvm', async (req, res, next) => {
-
         var commandInput = `Add-NewVM -VMName ${req.body.vmName} -VMRam ${req.body.ram} -VMDiskSize ${req.body.storage} -VMOS ${req.body.vmOS} -VMProcessor ${req.body.processor} -VirtualizationServer ${req.body.virtualizationServer}`
 
         console.log(commandInput)
@@ -39,7 +39,11 @@ function createRouter() {
                     if(element.includes('Id:')) {
                         var vmId = element.replace('Id: ', '')
                         console.log(vmId)
-                        return vmId;
+
+                        res.json({
+                            vmId: vmId,
+                            serverId: serverId
+                        })// Pour retourner des données après le POST /!\ angular attend du json /!\
 
                         //Enregistrer dans la bdd les infos de la vm avec son vmId
                     }
