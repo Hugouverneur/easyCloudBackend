@@ -11,8 +11,8 @@ function createRouter() {
             if(error) {
                 console.log(error);
             } else {
-                data = JSON.parse(data)
                 console.log(data)
+                res.status(200).json(data)
                 
                 //Envoyer la valeur à Angular pour que le bouton ait comme :
                 
